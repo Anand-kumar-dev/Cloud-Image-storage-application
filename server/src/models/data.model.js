@@ -2,7 +2,11 @@ import mongoose from "mongoose"
 
 
 const dataSchema = mongoose.Schema({
-  
+  userId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"users",
+    required:true
+  },
   imageUrl:{
     type:String,
     },
