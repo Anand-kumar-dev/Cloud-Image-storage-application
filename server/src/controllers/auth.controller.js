@@ -15,15 +15,16 @@ export const login = async (c) => {
     if (!user) return c.json({ mes: "User not found" }, 200);
 
     const isPasswordCorrect = await user.comparePassword(password);
+    console.log(isPasswordCorrect); 
     if (!isPasswordCorrect) return c.json({ mes: "password is incorect" }, 200);
 
     const accessToken = generateToken(user.id);
 
     await setCookie(c, "accessToken", accessToken, {
       httpOnly: true,
-      secure: false, // true in production (HTTPS)
+      secure: false, 
       sameSite: "Lax",
-      maxAge: 60 * 60 * 24, // seconds
+      maxAge: 60 * 60 * 24, 
       path: "/",
     });
     c.req.user = user;
@@ -43,15 +44,17 @@ export const login = async (c) => {
 export const signup = async (c) => {
   try {
     const { username, email, password } = await c.req.json();
-
+    
+    if(!username || !email || !password) return c.json({mess:"user, email , pass missing"}, 404)
     const user = await User.findOne({ email });
     if (user) return c.json({ mes: "User already exists please log in " }, 201);
 
-    const newUser = User.create({
+    const newUser = await User.create({
       username,
       email,
       password,
     });
+    console.log(newUser)
 
     return c.json({ mes: "User create successfully please log in" }, 200);
   } catch (error) {
