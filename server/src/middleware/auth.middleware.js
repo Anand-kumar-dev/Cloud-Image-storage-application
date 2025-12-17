@@ -1,22 +1,21 @@
-
 import jwt from "jsonwebtoken";
 import { getCookie } from "hono/cookie";
 
-
-
-export const verifyToken = async (c , next) => {
-
+export const verifyToken = async (c, next) => {
+  
   try {
+    console.log("verifying token middleware");
     const accessToken = getCookie(c, "accessToken");
-    if (!accessToken) return c.status(200).json({ mes: "you are not authorize to see this webpage" })
+    if (!accessToken)
+      return c.json({ mes: "you are not authorize to see this webpage" }, 401);
 
     const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
-    
-    if (!decoded) return c.status(401).json({ mes: "invalidated token Unauthorize" })
+
+    if (!decoded) return c.json({ mes: "invalidated token Unauthorize" }, 401);
     c.req.user = decoded;
-    next()
+    next();
   } catch (error) {
-    console.log(error)
-    return c.status(401).json({ mes: "Unauthorize" })
+    console.log(error);
+    return c.json({ mes: "Unauthorize" }, 401);
   }
-}
+};

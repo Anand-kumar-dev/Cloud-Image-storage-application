@@ -8,26 +8,34 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
 function Dash() {
-    const { request, loading, error } = useApi()
-  const { user} = useSelector(state=> state.auth)
-  const dispatch = useDispatch()
+  const { request, loading, error } = useApi();
+  const { user } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+
+
   const handleSubmit = async () => {
     const response = await request({ url: "/auth/logout", method: "GET", })
     dispatch(logout());
-     if(response.ok) return toast.success("log out successfully")
-  }
+    if (response.ok) return toast.success("log out successfully")
+  };
+
+  
   useEffect(() => {
-    if (error) return toast.error(error.response?.data?.mes || "log out failed")
+    if (error){
+      if(error.response.status == 401) return dispatch(logout())
+      if(error.response.status == 500) return toast.error(error.response?.data?.mes || error.response?.data?.error)
+        toast(error.response?.data?.mes)
+      }
   }, [error])
 
   return (
     <>
-
       <div>Dash</div>
       <div className='flex flex-col bg-black text-2xl text-white p-4 gap-4'>
-        {user? Object.values(user).map((use)=> <div keys={nanoid}>{use}</div>): "no user info"}
+        {user ? Object.entries(user).map(([key, use]) => <div key={key}>{key} : {use}</div>) : "no user info"}
       </div>
-      <Button onClick={handleSubmit} className='m-6 bg-black text-white p-4 rounded-xl'> {loading ? <Spinner /> : "log out"}</Button></>
+      <Button onClick={handleSubmit} className='m-6 bg-black text-white p-4 rounded-xl'> {loading ? <Spinner /> : "log out"}</Button>
+    </>
   )
 }
 

@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
-import { setUser ,setAuthenticated} from '@/feature/auth/auth.Slice'
+import { setUser, setAuthenticated } from '@/feature/auth/auth.Slice'
 import { useApi } from '@/hooks/Apihooks'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,10 +16,10 @@ function Login() {
   const [pass, setpass] = useState("")
 
   const strings = "Log in to Imaze"
- const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const handleSubmit = async () => {
-    
+
     const response = await request({
       url: "/auth/login",
       method: "POST",
@@ -34,12 +34,14 @@ function Login() {
     dispatch(setUser(response.mes))
     dispatch(setAuthenticated(true))
     console.log(response.mes)
-    toast.success(response.mes);
+    toast.success(`welcome ${response.mes.username}`);
     navigate("/dash")
-  
+
   }
   useEffect(() => {
     if (error) {
+      if (error.response?.status == 401) return toast.error(error.response?.data?.mes || "something went wrong")
+      if (error.response.status == 500) return toast.error(error.response?.data?.mes || error.response?.data?.error)
       toast.error(error.response?.data?.mes || "Something went wrong");
     }
 

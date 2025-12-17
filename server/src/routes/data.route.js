@@ -1,11 +1,12 @@
 import { Hono } from "hono";
-import { fetchData, saveData, savefile } from "../controllers/data.controller";
-
+import { fetchData, savefile } from "../controllers/data.controller";
+import { verifyToken } from "../middleware/auth.middleware.js";
+ 
 const data = new Hono()
 
-data.post("fetch" , fetchData );
+data.use(verifyToken);
 
-data.post("save" , saveData);
+data.post("fetch" , fetchData );
 
 data.post("upload" , savefile);
 

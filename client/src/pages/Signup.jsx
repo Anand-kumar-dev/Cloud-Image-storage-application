@@ -16,30 +16,32 @@ function Signup() {
   const [username, setusername] = useState("")
 
   const handleSubmit = async () => {
-      const response = await request({
-        url: "/auth/signup",
-        method: "POST",
-        data: {
-          username: username,
-          email: email,
-          password: pass
-        }
-      });
-      setemail("")
-      setpass("")
-      setusername("")
-      console.log(response.mes)
-      toast.success(response.mes)
-      
-  }
-useEffect(() => {
-  if (error) {
-    toast.error(error.response?.data?.mess || "Something went wrong");
-  }
- 
-}, [error]);
+    const response = await request({
+      url: "/auth/signup",
+      method: "POST",
+      data: {
+        username: username,
+        email: email,
+        password: pass
+      }
+    });
+    setemail("")
+    setpass("")
+    setusername("")
+    console.log(response.mes)
+    toast.success(response.mes)
 
-  
+  }
+  useEffect(() => {
+    if (error) {
+      if (error.response?.status == 401) return toast.error(error.response?.data?.mes || "something went wrong")
+      if (error.response.status == 500) return toast.error(error.response?.data?.mes || error.response?.data?.error)
+      toast.error(error.response?.data?.mess || "Something went wrong");
+    }
+
+  }, [error]);
+
+
 
   return (
     <div className='w-screen h-screen bg-black text-white flex justify-center items-center'>

@@ -1,5 +1,4 @@
 import { userData } from "../models/data.model";
-import { v2 as cloudinary } from "cloudinary";
 import { uploadFile } from "../services/cloudinary.service";
 
 export const savefile = async (c) => {
@@ -35,11 +34,10 @@ export const fetchData = async (c) => {
     const text = await userData.findById(id);
 
     c.status(200);
-    return c.json({ data: text });
+    return c.json({ data: text },200);
   } catch (error) {
     console.error(`error while fetching ${error}`);
-    c.status(400);
-    return c.json({ error: error });
+    return c.json({ mes: "Internal Server Error" ,error },500);
   }
 };
 
@@ -53,12 +51,10 @@ export const saveData = async (c) => {
     await userData.create({
       text: data,
     });
-    c.status(200);
-    return c.json({ mess: "data saved succesfully" });
+    return c.json({ mess: "data saved succesfully" },200);
   } catch (error) {
     console.error(`error while saving ${error}`);
-    c.status(400);
-    return c.json({ error: error });
+    return c.json({ mes: "Internal Server Error" ,error}, 500);
   }
   return c.text("data saved");
 };
