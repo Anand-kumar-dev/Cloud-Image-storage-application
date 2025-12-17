@@ -37,7 +37,7 @@ useEffect(() => {
     toast.error(error.response?.data?.mess || "Something went wrong");
   }
  
-}, [error ]);
+}, [error]);
 
   
 

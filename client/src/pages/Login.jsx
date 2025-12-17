@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
+import { setUser ,setAuthenticated} from '@/feature/auth/auth.Slice'
 import { useApi } from '@/hooks/Apihooks'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, } from 'react-router'
+import { Link, useNavigate, } from 'react-router'
 import { toast } from 'sonner'
 
 function Login() {
@@ -15,10 +16,10 @@ function Login() {
   const [pass, setpass] = useState("")
 
   const strings = "Log in to Imaze"
-
+ const navigate = useNavigate()
 
   const handleSubmit = async () => {
-
+    
     const response = await request({
       url: "/auth/login",
       method: "POST",
@@ -29,9 +30,13 @@ function Login() {
     });
     setemail("")
     setpass("")
-    toast
+
+    dispatch(setUser(response.mes))
+    dispatch(setAuthenticated(true))
     console.log(response.mes)
-    toast.success(response.mes)
+    toast.success(response.mes);
+    navigate("/dash")
+  
   }
   useEffect(() => {
     if (error) {

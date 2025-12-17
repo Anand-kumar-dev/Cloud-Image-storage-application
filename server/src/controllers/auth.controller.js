@@ -30,7 +30,11 @@ export const login = async (c) => {
     c.req.user = user;
     return c.json(
       {
-        mes: user,
+        mes: {
+          username: user.username,
+          email: user.email,
+          id: user._id,
+        },
         accesstoken: accessToken,
       },
       200
@@ -71,13 +75,13 @@ export const logout = async (c) => {
       return c.json({ mes: "you are not authorize to see this webpage" },400);
 
     const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
-    if (!decoded) return c.status(401).json({ mes: "Unauthorize" });
+    if (!decoded) return c.json({ mes: "Unauthorize" },401);
 
     deleteCookie(c,"accessToken", {
       path: "/",
     });
 
-   return c.json({ mes: "logged out successfully" },400);
+   return c.json({ mes: "logged out successfully" },200);
   } catch (error) {
     console.log("error while logging out" + error);
     c.json({ mes: "error while logging out" + error },400);
