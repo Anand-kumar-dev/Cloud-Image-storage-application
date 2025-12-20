@@ -11,9 +11,9 @@ export const verifyToken = async (c, next) => {
 
     const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
 
-    if (!decoded) return c.json({ mes: "invalidated token Unauthorize" }, 401);
     c.req.user = decoded;
-    next();
+    if (!decoded) return c.json({ mes: "invalidated token Unauthorize" }, 401);
+   await next();
   } catch (error) {
     console.log(error);
     return c.json({ mes: "Unauthorize" }, 401);

@@ -5,19 +5,21 @@ export const useApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const request = useCallback(async ({ url, method = "GET", data, params }) => {
+  const request = useCallback(async ({ url, method = "GET", data, params ,headers }) => {
     setLoading(true);
     setError(null);
-
+ 
     try {
       const response = await axios({
         url,
         method,
         data,
         params,
+        headers
       });
 
-      return response.data; // ✅ return data
+
+      return response.data;
     } catch (err) {
       setError(err);
       throw err;

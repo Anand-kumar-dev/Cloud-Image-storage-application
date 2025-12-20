@@ -33,7 +33,6 @@ function Login() {
 
     dispatch(setUser(response.mes))
     dispatch(setAuthenticated(true))
-    console.log(response.mes)
     toast.success(`welcome ${response.mes.username}`);
     navigate("/dash")
 

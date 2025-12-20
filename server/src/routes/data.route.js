@@ -6,8 +6,8 @@ const data = new Hono()
 
 data.use(verifyToken);
 
-data.post("fetch" , fetchData );
+data.post("/fetch" , fetchData );
 
-data.post("upload" , savefile);
+data.post("/upload" , savefile);
 
 export default data

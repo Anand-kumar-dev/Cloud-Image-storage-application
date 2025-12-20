@@ -4,14 +4,14 @@ import jwt from "jsonwebtoken";
 import { setCookie, getCookie, deleteCookie } from "hono/cookie";
 
 export const login = async (c) => {
-  console.log(await c.req.json());
+ 
   const { email, password } = await c.req.json();
   if (!email || !password)
     return c.json({ mes: "email or password is not there" }, 401);
 
   try {
     const user = await User.findOne({ email }).select("+password");
-    console.log(user);
+   
     if (!user) return c.json({ mes: "User not found" }, 401);
 
     const isPasswordCorrect = await user.comparePassword(password);
@@ -71,7 +71,7 @@ export const signup = async (c) => {
 export const logout = async (c) => {
   try {
     const accessToken = getCookie(c, "accessToken");
-    console.log("accessToken", accessToken);
+   
     if (!accessToken)
       return c.json({ mes: "Unauthorize" }, 401);
 
