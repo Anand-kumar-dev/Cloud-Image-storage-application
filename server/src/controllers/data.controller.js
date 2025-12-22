@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import { userData } from "../models/data.model";
-import { User } from "../models/user.model";
-import { uploadFile } from "../services/cloudinary.service";
+import { userImage } from "../models/image.model";
+import { deleteFile, uploadFile } from "../services/cloudinary.service";
 
 
 export const savefile = async (c) => {
   const body = await c.req.parseBody();
+  console.log(body);
   const file = body.image;
   console.log(file);
   if (!file) {
@@ -14,7 +14,7 @@ export const savefile = async (c) => {
 
   try {
     const result = await uploadFile(file);
-    await userData.create({
+    await userImage.create({
       userId: c.req.user.id,
       imageUrl: result.secure_url,
       imageId: result.public_id,
@@ -34,7 +34,7 @@ export const fetchData = async (c) => {
   const { id } = await c.req.user;
   console.log(id);
   try {
-    const text = await userData.aggregate([
+    const text = await userImage.aggregate([
       { $match: { userId: new mongoose.Types.ObjectId(id) } },
     ]);
 
@@ -46,18 +46,24 @@ export const fetchData = async (c) => {
   }
 };
 
-export const saveData = async (c) => {
-  const body = await c.req.json();
-  const { data } = body;
-  console.log(body + data);
-  try {
-    await userData.create({
-      text: data,
-    });
-    return c.json({ mess: "data saved succesfully" }, 200);
-  } catch (error) {
-    console.error(`error while saving ${error}`);
-    return c.json({ mes: "Internal Server Error", error }, 500);
+export const deleteData = async (c) => { 
+  const { _id} = await c.req.json();
+  console.log("this is delete " + JSON.stringify(_id));
+  if (!_id) {
+    return c.json("No _id provided", 400);
   }
-  return c.text("data saved");
-};
+
+    try {
+    const deletedImage = await userImage.findOneAndDelete({ _id: new mongoose.Types.ObjectId(_id) }).select("imageId");;
+   if(!deletedImage) return c.json({mes: "image doesn't exist"} , 400)
+    const result = await deleteFile(deletedImage.imageId)
+    c.status(200);
+    console.log(`File deleted successfully: ${JSON.stringify(result)}`);
+    return c.json({ data: result }, 200);
+  } catch (error) {
+    console.log(`error while deleting ${JSON.stringify(error)}`);
+
+    c.status(400);
+    return c.json({ error: error });
+  }
+ };

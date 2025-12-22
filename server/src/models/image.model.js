@@ -12,9 +12,10 @@ const dataSchema = mongoose.Schema({
     },
    imageId:{
     type:String,
+    select:false
    }
 },{timestamps: true});
 
 
 
-export const userData = mongoose.model("datas",dataSchema);
+export const userImage = mongoose.model("datas",dataSchema);
