@@ -53,7 +53,7 @@ function Dash() {
         return
       }
       const formData = new FormData()
-      formData.append("image", fileObj)
+      formData.append("file", fileObj)
 
       const response = await request({ url: "/api/upload", method: 'POST', data: formData })
       console.log(response)

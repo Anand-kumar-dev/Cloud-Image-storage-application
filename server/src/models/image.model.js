@@ -18,4 +18,4 @@ const dataSchema = mongoose.Schema({
 
 
 
-export const userImage = mongoose.model("datas",dataSchema);
+export const userImage = mongoose.model("images",dataSchema);

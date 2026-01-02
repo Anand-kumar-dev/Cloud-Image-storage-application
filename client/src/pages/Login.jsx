@@ -9,6 +9,8 @@ import { Link, useNavigate, } from 'react-router'
 import { toast } from 'sonner'
 
 function Login() {
+
+
   const user = useSelector((state) => state.auth.user)
   const dispatch = useDispatch()
   const { request, loading, error } = useApi()
@@ -20,31 +22,42 @@ function Login() {
 
   const handleSubmit = async () => {
 
-    const response = await request({
-      url: "/auth/login",
-      method: "POST",
-      data: {
-        email: email,
-        password: pass
-      }
-    });
-    setemail("")
-    setpass("")
-
-    dispatch(setUser(response.mes))
-    dispatch(setAuthenticated(true))
-    toast.success(`welcome ${response.mes.username}`);
-    navigate("/dash")
+   try {
+     const response = await request({
+       url: "/auth/login",
+       method: "POST",
+       data: {
+         email: email,
+         password: pass
+       }
+     });
+     setemail("")
+     setpass("")
+ 
+     dispatch(setUser(response.mes))
+     dispatch(setAuthenticated(true))
+     toast.success(`welcome ${response.mes.username}`);
+     navigate("/dash")
+   } catch (err) {
+   }
 
   }
-  useEffect(() => {
-    if (error) {
-      if (error.response?.status == 401) return toast.error(error.response?.data?.mes || "something went wrong")
-      if (error.response.status == 500) return toast.error(error.response?.data?.mes || error.response?.data?.error)
-      toast.error(error.response?.data?.mes || "Something went wrong");
-    }
 
-  }, [error]);
+
+useEffect(() => {
+  if (!error) return;
+  const status = error.response?.status;
+  if (status === 401) {
+    toast.error(error.response?.data?.mes || "Invalid credentials");
+  } else if (status === 500) {
+    toast.error("Server error");
+  } else {
+    toast.error("Something went wrong");
+  }
+}, [error]);
+
+
+
   return (
     <div className='w-screen h-screen bg-black text-white flex justify-center items-center'>
       <div className='w-lg h-lg p-5 rounded-3xl bg-gray-700 flex gap-5 flex-col justify-center items-center'>
