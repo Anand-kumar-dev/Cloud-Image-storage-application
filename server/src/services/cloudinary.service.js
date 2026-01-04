@@ -24,10 +24,12 @@ export const uploadFile = async (file) => {
 };
 
 
-export const deleteFile = async (publicId) => {
+export const deleteFile = async (publicId ,type) => {
  
 try {
-  const result = await cloudinary.uploader.destroy( publicId )
+  const result = await cloudinary.uploader.destroy( publicId ,{
+    resource_type: type,
+  })
   console.log("deleteFile SUCCESS", result);
     return result;
 } catch (error) {

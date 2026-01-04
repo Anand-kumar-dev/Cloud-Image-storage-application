@@ -14,7 +14,7 @@ function Dash() {
   const { request, loading, error } = useApi();
   const { user } = useSelector(state => state.auth);
   const dispatch = useDispatch();
-  const [images, setimages] = useState();
+  const [media, setmedia] = useState();
   const [imageupdate, setimageupdate] = useState(0)
   const file = useRef(null)
 
@@ -39,7 +39,7 @@ function Dash() {
   useEffect(() => {
     (async () => {
       const response = await request({ url: "/api/fetch", method: "POST" });
-      setimages(response.data);
+      setmedia(response.data);
       console.log(`fetch data ${JSON.stringify(response)}`)
     })()
   }, [imageupdate])
@@ -68,9 +68,9 @@ function Dash() {
   }
 
 
-  const deleteImage = async (imageid) => {
+  const deleteImage = async (imageid , type) => {
     try {
-      const response = await request({ url: "/api/delete", method: "POST" , data:{_id : imageid}})
+      const response = await request({ url: "/api/delete", method: "POST", data: { _id: imageid ,type :type} })
       console.log(response);
       if (response?.data) {
         setimageupdate(prev => prev + 1)
@@ -92,32 +92,32 @@ function Dash() {
       </div>
       <div className='bg-black w-fit text-2xl flex justify-center items-center flex-wrap text-white rounded-2xl p-5 m-3'>
         {
-          images == null ?
-            <div>no images found</div> :
-            images.map((image) => {
-              if (image.imageUrl.includes(".mp4")) {
-                return <div key={image._id} className="relative inline-block m-2">
-          <video
-            className="max-w-lg rounded-lg"
-            src={image.imageUrl}
-            controls
-          />
-          <button
-            onClick={() => deleteImage(image._id)}
-            className="absolute top-2 right-2 bg-red-600 text-white text-xs px-3 py-1 rounded-md hover:bg-red-700"
-          >
-            Delete
-          </button>
-        </div>
+          media == null ?
+            <div>no media found</div> :
+            media.media.map((data) => {
+              if (data.type === "video") {
+                return <div key={data.id} className="relative inline-block m-2">
+                  <video
+                    className="max-w-lg rounded-lg"
+                    src={data.url}
+                    controls
+                  />
+                  <button
+                    onClick={() => deleteImage(data.id , data.type)}
+                    className="absolute top-2 right-2 bg-red-600 text-white text-xs px-3 py-1 rounded-md hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
               }
-              return <div key={image._id} className="relative inline-block m-2">
+              return <div key={data.id} className="relative inline-block m-2">
                 <img
                   className="max-w-lg max-h-lg rounded-lg"
-                  src={image.imageUrl}
+                  src={data.url}
                   alt=""
                 />
                 <button
-                  onClick={() => deleteImage(image._id)}
+                  onClick={() => deleteImage(data.id , data.type)}
                   className="absolute bottom-2 right-2 bg-red-600 text-white text-xs px-3 py-1 rounded-md hover:bg-red-700"
                 >
                   Delete
