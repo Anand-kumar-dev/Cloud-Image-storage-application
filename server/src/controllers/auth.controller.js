@@ -33,7 +33,6 @@ export const login = async (c) => {
         mes: {
           username: user.username,
           email: user.email,
-          id: user._id,
         },
         accesstoken: accessToken,
       },
@@ -87,3 +86,8 @@ export const logout = async (c) => {
     c.json({ mes: "Internal Server Error" , error }, 500);
   }
 };
+
+
+export const meAut = async (c) => {
+ return c.json({ mes: c.req.user }, 200);
+}

@@ -5,11 +5,12 @@ import { useApi } from '@/hooks/Apihooks'
 import { nanoid } from '@reduxjs/toolkit'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { data } from 'react-router'
+import { data , useNavigate } from 'react-router'
 import { toast } from 'sonner'
 
 function Dash() {
 
+  const navigate = useNavigate()
 
   const { request, loading, error } = useApi();
   const { user } = useSelector(state => state.auth);
@@ -24,6 +25,8 @@ function Dash() {
     dispatch(logout());
     if (response.ok) return toast.success("log out successfully")
   };
+
+
 
 
   useEffect(() => {
@@ -84,55 +87,117 @@ function Dash() {
   }
 
   return (
-    <>
+  <>
+    {/* Page wrapper */}
+    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6">
 
-      <div>Dash</div>
-      <div className='flex flex-col bg-black text-2xl text-white p-4 gap-4'>
-        {user ? Object.entries(user).map(([key, use]) => <div key={key}>{key} : {use}</div>) : "no user info"}
+      {/* Header */}
+      <div className="mb-8 flex justify-between sticky top-3 z-99 items-center border border-white/20 p-3 bg-white/10 backdrop-blur-xl shadow-2xl  rounded-2xl">
+        <div>
+          <h1 className="text-4xl font-semibold tracking-tight">Dashboard</h1>
+        <p className="text-neutral-400 mt-1">Manage your media & account</p>
+        </div>
+         <Button
+          onClick={handleSubmit}
+          className="rounded-xl bg-red-600 hover:bg-red-700 px-6 py-3 ml-auto"
+        >
+          {loading ? <Spinner /> : "Log out"}
+        </Button>
       </div>
-      <div className='bg-black w-fit text-2xl flex justify-center items-center flex-wrap text-white rounded-2xl p-5 m-3'>
-        {
-          media == null ?
-            <div>no media found</div> :
-            media.media.map((data) => {
-              if (data.type === "video") {
-                return <div key={data.id} className="relative inline-block m-2">
+      
+
+      {/* User Info Card */}
+      <div className="mb-8 max-w-2xl rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6">
+        <h2 className="text-xl font-medium mb-4 text-neutral-200">User Info</h2>
+
+        {user ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            {Object.entries(user).map(([key, value]) => (
+              <div
+                key={key}
+                className="flex justify-between rounded-lg bg-black/40 px-4 py-2"
+              >
+                <span className="text-neutral-400">{key}</span>
+                <span className="text-neutral-200 truncate max-w-[150px]">
+                  {String(value)}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-neutral-500">No user info</div>
+        )}
+      </div>
+
+      {/* Media Section */}
+      <div className="mb-10">
+        <h2 className="text-xl font-medium mb-4 text-neutral-200">Your Media</h2>
+
+        {media == null ? (
+          <div className="text-neutral-500">No media found</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {media.media.map((data) => (
+              <div
+                key={data.id}
+                className="group relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 hover:border-white/20 transition"
+              >
+                {data.type === "video" ? (
                   <video
-                    className="max-w-lg rounded-lg"
+                    className="w-full h-64 object-cover"
                     src={data.url}
                     controls
                   />
+                ) : (
+                  <img
+                    className="w-full h-64 object-cover"
+                    src={data.url}
+                    alt=""
+                  />
+                )}
+
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end justify-end p-4">
                   <button
-                    onClick={() => deleteImage(data.id , data.type)}
-                    className="absolute top-2 right-2 bg-red-600 text-white text-xs px-3 py-1 rounded-md hover:bg-red-700"
+                    onClick={() => deleteImage(data.id, data.type)}
+                    className="bg-red-600/90 hover:bg-red-700 text-white text-xs px-4 py-2 rounded-lg"
                   >
                     Delete
                   </button>
                 </div>
-              }
-              return <div key={data.id} className="relative inline-block m-2">
-                <img
-                  className="max-w-lg max-h-lg rounded-lg"
-                  src={data.url}
-                  alt=""
-                />
-                <button
-                  onClick={() => deleteImage(data.id , data.type)}
-                  className="absolute bottom-2 right-2 bg-red-600 text-white text-xs px-3 py-1 rounded-md hover:bg-red-700"
-                >
-                  Delete
-                </button>
               </div>
-            })
-        }
+            ))}
+          </div>
+        )}
       </div>
-      <Button onClick={handleSubmit} className='m-6 bg-black text-white p-4 rounded-xl'> {loading ? <Spinner /> : "log out"}</Button>
-      <input className='bg-cyan-950 p-3' ref={file} type="file" />
-      <Button onClick={addImage}>add images</Button>
 
+      {/* Actions */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
 
-    </>
-  )
+        <label className="relative cursor-pointer">
+          <input
+            ref={file}
+            type="file"
+            className="hidden"
+          />
+          <div className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 hover:bg-white/10 transition">
+            Upload Media
+          </div>
+        </label>
+
+        <Button
+          onClick={addImage}
+          className="rounded-xl bg-white text-black hover:bg-neutral-200 px-6 py-3"
+        >
+          Add
+        </Button>
+
+        
+      </div>
+    </div>
+  </>
+)
+
 }
 
 export default Dash

@@ -58,25 +58,73 @@ useEffect(() => {
 
 
 
-  return (
-    <div className='w-screen h-screen bg-black text-white flex justify-center items-center'>
-      <div className='w-lg h-lg p-5 rounded-3xl bg-gray-700 flex gap-5 flex-col justify-center items-center'>
-        <h2 className='text-2xl flex'>
-          {Array.from(strings).map((letter, index) => {
-            if (letter == " ") {
-              return <span key={index}>&nbsp;</span>
-            }
-            return <span className='hover:text-yellow-500 p-0' key={index}>{letter}</span>
-          })}</h2>
-        <Input placeholder='email' value={email} onChange={(e) => { setemail(e.target.value) }} />
-        <Input placeholder='password' value={pass} onChange={(e) => { setpass(e.target.value) }} />
-        <Button variant='' size='lg' onClick={handleSubmit}>{loading ? <Spinner /> : "login"}</Button>
-        <div>
-          <Link to={"/signup"} className='hover:underline' >Signup</Link>
-        </div>
+ return (
+  <div className="w-screen h-screen bg-gradient-to-br from-black via-neutral-900 to-black flex justify-center items-center text-white">
+
+    {/* Card */}
+    <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 shadow-2xl">
+
+      {/* Title */}
+      <h2 className="text-3xl font-semibold text-center mb-2 tracking-tight">
+        {Array.from(strings).map((letter, index) => {
+          if (letter === " ") return <span key={index}>&nbsp;</span>
+          return (
+            <span
+              key={index}
+              className="inline-block transition hover:text-yellow-400"
+            >
+              {letter}
+            </span>
+          )
+        })}
+      </h2>
+
+      <p className="text-center text-sm text-neutral-400 mb-6">
+        Welcome back, login to continue
+      </p>
+
+      {/* Form */}
+      <div className="flex flex-col gap-4">
+        <Input
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setemail(e.target.value)}
+          className="bg-black/40 border-white/10 text-white placeholder:text-neutral-500 focus:border-white/30"
+        />
+
+        <Input
+          type="password"
+          placeholder="Password"
+          value={pass}
+          onChange={(e) => setpass(e.target.value)}
+          className="bg-black/40 border-white/10 text-white placeholder:text-neutral-500 focus:border-white/30"
+        />
+
+        <Button
+          size="lg"
+          disabled={loading || !email | !pass}
+          onClick={handleSubmit}
+          className="mt-2 rounded-xl bg-white text-black hover:bg-neutral-200 transition"
+        >
+          {loading ? <Spinner /> : "Login"}
+        </Button>
       </div>
+
+      {/* Footer */}
+      <div className="mt-6 text-center text-sm text-neutral-400">
+        Don’t have an account?{" "}
+        <Link
+          to="/signup"
+          className="text-white hover:underline hover:text-yellow-400 transition"
+        >
+          Sign up
+        </Link>
+      </div>
+
     </div>
-  )
+  </div>
+)
+
 }
 
 export default Login
