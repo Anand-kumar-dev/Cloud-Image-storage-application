@@ -4,14 +4,14 @@ import jwt from "jsonwebtoken";
 import { setCookie, getCookie, deleteCookie } from "hono/cookie";
 
 export const login = async (c) => {
- 
+
   const { email, password } = await c.req.json();
   if (!email || !password)
     return c.json({ mes: "email or password is not there" }, 401);
 
   try {
     const user = await User.findOne({ email }).select("+password");
-   
+
     if (!user) return c.json({ mes: "User not found" }, 401);
 
     const isPasswordCorrect = await user.comparePassword(password);
@@ -19,7 +19,7 @@ export const login = async (c) => {
     if (!isPasswordCorrect) return c.json({ mes: "Incorrect password" }, 401);
     const accessToken = generateToken(user.id);
 
-     setCookie(c, "accessToken", accessToken, {
+    setCookie(c, "accessToken", accessToken, {
       httpOnly: true,
       secure: false,
       sameSite: "Lax",
@@ -27,7 +27,7 @@ export const login = async (c) => {
       path: "/",
     });
 
-    c.req.user = user;
+
     return c.json(
       {
         mes: {
@@ -40,7 +40,7 @@ export const login = async (c) => {
     );
   } catch (error) {
     console.log(error);
-   return c.json({ mes: `Internal Server Error ${error}`, error },500);
+    return c.json({ mes: `Internal Server Error ${error}`, error }, 500);
   }
 };
 
@@ -58,19 +58,19 @@ export const signup = async (c) => {
       email,
       password,
     });
-    console.log(newUser);
+    console.log(`new user signned in details are ::${newUser}`);
 
     return c.json({ mes: "User create successfully please log in" }, 200);
   } catch (error) {
     console.log(`erorr while signing up ${error}`);
-    c.json({ mes: "Inernal server error" ,error}, 500);
+    c.json({ mes: "Inernal server error", error }, 500);
   }
 };
 
 export const logout = async (c) => {
   try {
     const accessToken = getCookie(c, "accessToken");
-   
+
     if (!accessToken)
       return c.json({ mes: "Unauthorize" }, 401);
 
@@ -80,14 +80,23 @@ export const logout = async (c) => {
     deleteCookie(c, "accessToken", {
       path: "/",
     });
-
+    console.log("user logged out")
     return c.json({ mes: "logged out successfully" }, 200);
   } catch (error) {
-    c.json({ mes: "Internal Server Error" , error }, 500);
+    c.json({ mes: "Internal Server Error", error }, 500);
   }
 };
 
 
 export const meAut = async (c) => {
- return c.json({ mes: c.req.user }, 200);
+  const { id } = c.req.user;
+  console.log(`me aut called for user id :: ${id}`);
+  const isUser = await User.findById(id);
+  if (!isUser) return c.json({ mes: "Unauthorized" }, 401)
+  return c.json({
+    mes: {
+      username: isUser.username,
+      email: isUser.email
+    }
+  }, 200)
 }

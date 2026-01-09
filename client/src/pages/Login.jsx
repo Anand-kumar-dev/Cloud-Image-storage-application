@@ -37,7 +37,7 @@ function Login() {
      dispatch(setUser(response.mes))
      dispatch(setAuthenticated(true))
      toast.success(`welcome ${response.mes.username}`);
-     navigate("/dash")
+     navigate("/media")
    } catch (err) {
    }
 

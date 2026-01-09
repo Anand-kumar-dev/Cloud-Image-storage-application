@@ -5,10 +5,10 @@ import { useApi } from '@/hooks/Apihooks'
 import { nanoid } from '@reduxjs/toolkit'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { data , useNavigate } from 'react-router'
+import { data, Link, useNavigate } from 'react-router'
 import { toast } from 'sonner'
 
-function Dash() {
+function Dash(medias={media}) {
 
   const navigate = useNavigate()
 
@@ -71,9 +71,9 @@ function Dash() {
   }
 
 
-  const deleteImage = async (imageid , type) => {
+  const deleteImage = async (imageid, type) => {
     try {
-      const response = await request({ url: "/api/delete", method: "POST", data: { _id: imageid ,type :type} })
+      const response = await request({ url: "/api/delete", method: "POST", data: { _id: imageid, type: type } })
       console.log(response);
       if (response?.data) {
         setimageupdate(prev => prev + 1)
@@ -87,116 +87,118 @@ function Dash() {
   }
 
   return (
-  <>
-    {/* Page wrapper */}
-    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6">
+    <>
+      {/* Page wrapper */}
+      <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6">
 
-      {/* Header */}
-      <div className="mb-8 flex justify-between sticky top-3 z-99 items-center border border-white/20 p-3 bg-white/10 backdrop-blur-xl shadow-2xl  rounded-2xl">
-        <div>
-          <h1 className="text-4xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-neutral-400 mt-1">Manage your media & account</p>
+        {/* Header */}
+        <div className="mb-8 flex justify-between sticky top-3 z-99 items-center border border-white/20 p-3 bg-white/10 backdrop-blur-xl shadow-2xl  rounded-2xl">
+          <div>
+            <h1 className="text-4xl font-semibold tracking-tight"> <span className = "text-yellow-600">hi , </span>{user.username }</h1>
+            <p className="text-neutral-400 mt-1">Manage your media & account</p>
+          </div>
+          <Button
+            onClick={handleSubmit}
+            className="rounded-xl bg-red-600 hover:bg-red-700 px-6 py-3 ml-auto"
+          >
+            {loading ? <Spinner /> : "Log out"}
+          </Button>
         </div>
-         <Button
-          onClick={handleSubmit}
-          className="rounded-xl bg-red-600 hover:bg-red-700 px-6 py-3 ml-auto"
-        >
-          {loading ? <Spinner /> : "Log out"}
-        </Button>
-      </div>
-      
 
-      {/* User Info Card */}
-      <div className="mb-8 max-w-2xl rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6">
-        <h2 className="text-xl font-medium mb-4 text-neutral-200">User Info</h2>
 
-        {user ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            {Object.entries(user).map(([key, value]) => (
-              <div
-                key={key}
-                className="flex justify-between rounded-lg bg-black/40 px-4 py-2"
-              >
-                <span className="text-neutral-400">{key}</span>
-                <span className="text-neutral-200 truncate max-w-[150px]">
-                  {String(value)}
-                </span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-neutral-500">No user info</div>
-        )}
-      </div>
+        {/* User Info Card */}
+        <div className="mb-8 max-w-2xl rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6">
+          <h2 className="text-xl font-medium mb-4 text-neutral-200">User Info</h2>
 
-      {/* Media Section */}
-      <div className="mb-10">
-        <h2 className="text-xl font-medium mb-4 text-neutral-200">Your Media</h2>
-
-        {media == null ? (
-          <div className="text-neutral-500">No media found</div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {media.media.map((data) => (
-              <div
-                key={data.id}
-                className="group relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 hover:border-white/20 transition"
-              >
-                {data.type === "video" ? (
-                  <video
-                    className="w-full h-64 object-cover"
-                    src={data.url}
-                    controls
-                  />
-                ) : (
-                  <img
-                    className="w-full h-64 object-cover"
-                    src={data.url}
-                    alt=""
-                  />
-                )}
-
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end justify-end p-4">
-                  <button
-                    onClick={() => deleteImage(data.id, data.type)}
-                    className="bg-red-600/90 hover:bg-red-700 text-white text-xs px-4 py-2 rounded-lg"
-                  >
-                    Delete
-                  </button>
+          {user ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+              {Object.entries(user).map(([key, value]) => (
+                <div
+                  key={key}
+                  className="flex justify-between rounded-lg bg-black/40 px-4 py-2"
+                >
+                  <span className="text-neutral-400">{key}</span>
+                  <span className="text-neutral-200 truncate max-w-[150px]">
+                    {String(value)}
+                  </span>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className="text-neutral-500">No user info</div>
+          )}
+        </div>
+
+        {/* Media Section */}
+        <div className="mb-10">
+          <h2 className="text-xl font-medium mb-4 text-neutral-200">Your Media</h2>
+
+          {media == null ? (
+            <div className="text-neutral-500">No media found</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {media.media.map((data) => (
+                <Link
+                  key={data.id}
+                  to={`/media/${data.id}`}
+                   state={{ medias: media?.media }}
+                  className="group relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 hover:border-white/20 transition"
+                >
+                  {data.type === "video" ? (
+                    <video
+                      className="w-full h-64 object-cover"
+                      src={data.url}
+                      controls
+                    />
+                  ) : (
+                    <img
+                      className="w-full h-64 object-cover"
+                      src={data.url}
+                      alt=""
+                    />
+                  )}
+
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end justify-end p-4">
+                    <button
+                      onClick={(e) => deleteImage(data.id, data.type)}
+                      className="bg-red-600/90 hover:bg-red-700 text-white text-xs px-4 py-2 rounded-lg"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+
+          <label className="relative cursor-pointer">
+            <input
+              ref={file}
+              type="file"
+              className="hidden"
+            />
+            <div className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 hover:bg-white/10 transition">
+              Upload Media
+            </div>
+          </label>
+
+          <Button
+            onClick={addImage}
+            className="rounded-xl bg-white text-black hover:bg-neutral-200 px-6 py-3"
+          >
+            Add
+          </Button>
+
+
+        </div>
       </div>
-
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-
-        <label className="relative cursor-pointer">
-          <input
-            ref={file}
-            type="file"
-            className="hidden"
-          />
-          <div className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 hover:bg-white/10 transition">
-            Upload Media
-          </div>
-        </label>
-
-        <Button
-          onClick={addImage}
-          className="rounded-xl bg-white text-black hover:bg-neutral-200 px-6 py-3"
-        >
-          Add
-        </Button>
-
-        
-      </div>
-    </div>
-  </>
-)
+    </>
+  )
 
 }
 

@@ -13,7 +13,6 @@ export const savefile = async (c) => {
   }
 
   if (file.type.startsWith("image/")) {
-    console.log("this is image file");
     try {
       const result = await uploadFile(file);
       await userImage.create({
@@ -22,7 +21,7 @@ export const savefile = async (c) => {
         imageId: result.public_id,
       });
       c.status(200);
-      console.log(`File uploaded successfully: ${JSON.stringify(result)}`);
+      console.log(`File uploaded successfully`);
       return c.json({ data: result.url }, 200);
     } catch (error) {
       console.log(`error while fetching ${JSON.stringify(error)}`);
@@ -34,7 +33,6 @@ export const savefile = async (c) => {
   }
   else if (file.type.startsWith("video/")) {
 
-    console.log("this is video file");
     try {
       const result = await uploadFile(file);
       await userVideo.create({
@@ -48,7 +46,7 @@ export const savefile = async (c) => {
         height: result.height,
       });
       c.status(200);
-      console.log(`File uploaded successfully: ${JSON.stringify(result)}`);
+      console.log(`File uploaded successfully`);
       return c.json({ data: result.url }, 200);
     } catch (error) {
       console.log(`error while fetching ${JSON.stringify(error)}`);
@@ -68,7 +66,6 @@ export const savefile = async (c) => {
 
 export const fetchData = async (c) => {
   const { id } = await c.req.user;
-  console.log(id);
   try {
     const text = await User.aggregate([
       {
@@ -94,10 +91,8 @@ export const fetchData = async (c) => {
       },
       { $unset: ["password", "__v"] }
     ]);
-    console.log("this is aggregated data " + JSON.stringify(text));
     const preparedResponse = mapUserMedia(text[0]);
-    console.log("this is fetched data " + JSON.stringify(preparedResponse));
-
+    console.log("frontend fetched data ");
     c.status(200);
     return c.json({ data: preparedResponse }, 200);
   } catch (error) {
@@ -110,7 +105,6 @@ export const fetchData = async (c) => {
 
 export const deleteData = async (c) => {
   const { _id, type } = await c.req.json();
-  console.log("this is delete " + JSON.stringify(_id));
   if (!_id || !type) {
     return c.json("No _id or type provided", 400);
   }
@@ -120,10 +114,10 @@ export const deleteData = async (c) => {
      try {
     const deletedVideo = await userVideo.findOneAndDelete({ _id: new mongoose.Types.ObjectId(_id) }).select("videoId");;
     if (!deletedVideo) return c.json({ mes: "video doesn't exist" }, 400)
-      console.log("this is deleted video " + JSON.stringify(deletedVideo));
+      
     const result = await deleteFile(deletedVideo.videoId , "video");
     c.status(200);
-    console.log(`File deleted successfully: ${JSON.stringify(result)}`);
+    console.log(`File deleted successfully`);
     return c.json({ data: result }, 200);
   } catch (error) {
     console.error(`error while deleting ${JSON.stringify(error)}`);
