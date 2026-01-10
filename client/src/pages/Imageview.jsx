@@ -1,17 +1,25 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
+import { saveAs } from "file-saver";
+import { useApi } from "@/hooks/Apihooks";
+import { deleteImage } from "@/services/media";
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 
 
 function Imageview() {
-    const { state } = useLocation();
-    const medias = state?.medias || [];
-    console.log("medias in imageview:", medias);
-    const { mediaId } = useParams();
+
+    const { request ,loading } = useApi();
     const navigate = useNavigate();
+    const { state } = useLocation();
+    const { mediaId } = useParams();
+
+    const medias = state?.medias || [];
+
     const [menuOpen, setMenuOpen] = useState(false);
     const [show, setShow] = useState(false);
-
+    const [downLoadding, setDownLoading] = useState(false); 
 
     useEffect(() => {
         setTimeout(() => setShow(true), 50);
@@ -20,6 +28,18 @@ function Imageview() {
     const chosedMedia = medias.find(med => med.id === mediaId);
 
     if (!chosedMedia) return <p>Not Found</p>;
+
+    const handleDeleteImage = async (imageId, type) => {
+        await deleteImage({
+            request,
+            imageId,
+            type,
+            onSuccess: () => toast.success("Image deleted successfully"),
+        });
+        navigate(-1);
+    };
+
+    
 
     return (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
@@ -37,7 +57,7 @@ function Imageview() {
         `}
             >
 
-                {/* Close Button (inside image) */}
+                {/* Close Button */}
                 <button
                     onClick={() => navigate(-1)}
                     className="absolute top-5 left-5 z-20
@@ -59,14 +79,22 @@ function Imageview() {
 
                     {menuOpen && (
                         <div className="absolute right-0 mt-2 w-44 rounded-xl border border-white/10 bg-black/80 backdrop-blur shadow-xl overflow-hidden">
-                            <button className="w-full px-4 py-2 text-white text-left text-sm hover:bg-white/10">
+                            <button
+                                onClick={() => {
+                                    saveAs(chosedMedia.url, chosedMedia.id)
+                                    setMenuOpen(!menuOpen)
+                                }}
+                                className="w-full px-4 py-2 text-white text-left text-sm hover:bg-white/10">
                                 Download
                             </button>
-                            <button className="w-full px-4 py-2 text-white text-left text-sm hover:bg-white/10">
+                            <button
+                                className="w-full px-4 py-2 text-white text-left text-sm hover:bg-white/10">
                                 Details
                             </button>
-                            <button className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-red-500/10">
-                                Delete
+                            <button
+                            onClick={()=>handleDeleteImage(chosedMedia.id , chosedMedia.type)}
+                                className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-red-500/10">
+                               {loading ? <Spinner /> : "Delete"}
                             </button>
                         </div>
                     )}
@@ -88,7 +116,6 @@ function Imageview() {
                     />
                 )}
 
-                {/* Subtle Gradient Overlay (premium touch) */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/30" />
             </div>
         </div>

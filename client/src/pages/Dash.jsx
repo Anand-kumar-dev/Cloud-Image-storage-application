@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { logout } from '@/feature/auth/auth.Slice'
 import { useApi } from '@/hooks/Apihooks'
+import { addImage, deleteImage } from '@/services/media'
 import { nanoid } from '@reduxjs/toolkit'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -48,43 +49,25 @@ function Dash(medias={media}) {
   }, [imageupdate])
 
 
-  const addImage = async () => {
-    try {
-      const fileObj = file.current?.files?.[0]
-      if (!fileObj) {
-        toast.error("Please select a file")
-        return
-      }
-      const formData = new FormData()
-      formData.append("file", fileObj)
+const handleAddImage = async () => {
+  const fileObj = file.current?.files?.[0];
 
-      const response = await request({ url: "/api/upload", method: 'POST', data: formData })
-      console.log(response)
-
-      if (response?.data || typeof response === "string") {
-        toast.success("images added successfully");
-        setimageupdate(prev => prev + 1);
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  await addImage({
+    request,
+    fileObj,
+    onSuccess: () => setimageupdate(prev => prev + 1),
+  });
+};
 
 
-  const deleteImage = async (imageid, type) => {
-    try {
-      const response = await request({ url: "/api/delete", method: "POST", data: { _id: imageid, type: type } })
-      console.log(response);
-      if (response?.data) {
-        setimageupdate(prev => prev + 1)
-        toast.success(response.data.result + "from backend")
-      }
-
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message || "something wrong while delting")
-    }
-  }
+ const handleDeleteImage = async (imageId, type) => {
+  await deleteImage({
+    request,
+    imageId,
+    type,
+    onSuccess: () => setimageupdate(prev => prev + 1),
+  });
+};
 
   return (
     <>
@@ -161,7 +144,7 @@ function Dash(medias={media}) {
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-end justify-end p-4">
                     <button
-                      onClick={(e) => deleteImage(data.id, data.type)}
+                      onClick={(e) => handleDeleteImage(data.id, data.type)}
                       className="bg-red-600/90 hover:bg-red-700 text-white text-xs px-4 py-2 rounded-lg"
                     >
                       Delete
@@ -188,7 +171,7 @@ function Dash(medias={media}) {
           </label>
 
           <Button
-            onClick={addImage}
+            onClick={handleAddImage}
             className="rounded-xl bg-white text-black hover:bg-neutral-200 px-6 py-3"
           >
             Add
