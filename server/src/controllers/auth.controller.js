@@ -2,6 +2,9 @@ import { User } from "../models/user.model.js";
 import { generateToken } from "../utils/jwt.utils.js";
 import jwt from "jsonwebtoken";
 import { setCookie, getCookie, deleteCookie } from "hono/cookie";
+import { uploadFile } from "../services/cloudinary.service.js";
+
+
 
 export const login = async (c) => {
 
@@ -33,6 +36,7 @@ export const login = async (c) => {
         mes: {
           username: user.username,
           email: user.email,
+          avatar: user.avatar,  
         },
         accesstoken: accessToken,
       },
@@ -44,19 +48,35 @@ export const login = async (c) => {
   }
 };
 
+
 export const signup = async (c) => {
   try {
-    const { username, email, password } = await c.req.json();
+   const body = await c.req.formData();
 
+    const username = body.get("username");
+    const email = body.get("email");
+    const password = body.get("password");
+    const file = body.get("avatar");
+   console.log(file);
     if (!username || !email || !password)
       return c.json({ mess: "user, email , pass missing" }, 401);
+
     const user = await User.findOne({ email });
     if (user) return c.json({ mes: "User already exists please log in " }, 401);
+
+
+    let uploadavatar = null;
+    if(file){
+             const uploadResult = await uploadFile(file , "user_avatars" , "image");
+              uploadavatar =  uploadResult.public_id;
+             console.log("avaatar uploaded successfully:", uploadResult);
+    }
 
     const newUser = await User.create({
       username,
       email,
       password,
+      avatar: uploadavatar,  
     });
     console.log(`new user signned in details are ::${newUser}`);
 
@@ -66,6 +86,7 @@ export const signup = async (c) => {
     c.json({ mes: "Inernal server error", error }, 500);
   }
 };
+
 
 export const logout = async (c) => {
   try {
@@ -96,7 +117,8 @@ export const meAut = async (c) => {
   return c.json({
     mes: {
       username: isUser.username,
-      email: isUser.email
+      email: isUser.email,
+      avatar: isUser.avatar,  
     }
   }, 200)
 }

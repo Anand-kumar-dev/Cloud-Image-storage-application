@@ -2,7 +2,7 @@ import { cloudinary } from "../config/cloudinary.config";
 
 
 
-export const uploadFile = async (file) => {
+export const uploadFile = async (file , folder = "uploads" , resource_type = "auto") => {
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
     const base64 = buffer.toString("base64");
@@ -10,8 +10,8 @@ export const uploadFile = async (file) => {
     const result = await cloudinary.uploader.upload(
       `data:${file.type};base64,${base64}`,
       {
-        folder: "uploads",
-        resource_type: "auto",
+        folder: folder,
+        resource_type: resource_type,
       }
     );
 
@@ -37,3 +37,4 @@ try {
   throw error;
 }
 }
+

@@ -21,13 +21,10 @@ const userSchema = new mongoose.Schema(
             required: true,
             select: false
         },
-        images:[
-            {
-                type:mongoose.Schema.Types.ObjectId,
-                ref:"datas"
-            }
-        ]
-
+        avatar:{
+            type: String,
+            required: false
+        }
     }, { timestamps: true });
 
 
