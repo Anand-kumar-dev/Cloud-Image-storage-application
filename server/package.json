@@ -5,7 +5,7 @@
   "types": "dist/index.d.js",
   "scripts": {
     "build": "echo \"no build step for JS server\"",
-    "dev": "bun --watch run src/index.js"
+    "dev": "bun --watch run src/cluster.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

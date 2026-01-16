@@ -5,6 +5,7 @@ import { useApi } from '@/hooks/Apihooks'
 import { getAvatarUrl } from '@/services/cloudinary'
 import { addImage, deleteImage } from '@/services/media'
 import { nanoid } from '@reduxjs/toolkit'
+import { Settings } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { data, Link, useNavigate } from 'react-router'
@@ -113,6 +114,10 @@ function Dash(medias = { media }) {
           >
             {loading ? <Spinner /> : "Log out"}
           </Button>
+          <Link to={"/settings"}
+           className='ml-3'>
+          <Settings />
+          </Link>
         </div>
 
 

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import axios from "axios";
+import axiosInstance from "../config/axios.config";
 
 export const useApi = () => {
   const [loading, setLoading] = useState(false);
@@ -10,7 +10,7 @@ export const useApi = () => {
     setError(null);
  
     try {
-      const response = await axios({
+      const response = await axiosInstance({
         url,
         method,
         data,

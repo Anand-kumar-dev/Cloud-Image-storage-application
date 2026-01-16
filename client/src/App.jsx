@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useApi } from "./hooks/Apihooks";
 import { setUser, setAuthenticated } from '@/feature/auth/auth.Slice'
 import Imageview from "./pages/Imageview";
+import Settings from "./pages/Settings";
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
 				<Route element={<ProtectedRoute authChecked={authChecked}/>}>
 					<Route path="/media" element={<Dash />} />
           <Route path="/media/:mediaId" element={<Imageview />} />
+          <Route path="/settings" element={<Settings />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>
