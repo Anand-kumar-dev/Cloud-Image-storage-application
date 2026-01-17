@@ -4,6 +4,28 @@ A full-stack web application for secure image and video management with user aut
 
 ---
 
+## Screenshots & Demo
+
+### Login Page
+<img width="1363" height="644" alt="image" src="https://github.com/user-attachments/assets/9b55a35d-e68c-49f4-b6c0-0108f5bcae68" />
+
+### Signup Page
+<img width="1366" height="642" alt="image" src="https://github.com/user-attachments/assets/5cab3d04-f3a4-4f73-ae66-0940f15afc9b" />
+
+### Dashboard (Media Gallery)
+<img width="1346" height="636" alt="image" src="https://github.com/user-attachments/assets/7ef59121-6d4b-4788-bd5d-91229145734c" />
+<img width="1346" height="615" alt="image" src="https://github.com/user-attachments/assets/966d4789-ff3a-4b55-82ef-c8ed3dfa64d3" />
+
+### Image Viewer Modal
+<img width="1362" height="607" alt="image" src="https://github.com/user-attachments/assets/69ce6464-f1da-41ce-bd89-d23cf84b1097" />
+
+### User Settings
+<img width="1365" height="630" alt="image" src="https://github.com/user-attachments/assets/d2ccf490-dd79-4a9b-8f51-96df48717b97" />
+
+### Demo Video
+https://github.com/user-attachments/assets/e176794a-c09e-4920-b380-3ee5017d243c
+
+---
 ## Features
 
 - **User Authentication** – Secure signup, login, and logout with JWT tokens and password encryption
@@ -113,30 +135,6 @@ bun run  dev
 bun run dev:client  # Frontend on http://localhost:5173
 bun run dev:server  # Backend on http://localhost:3000
 ```
-
-
-## Screenshots & Demo
-
-### Login Page
-<img width="1363" height="644" alt="image" src="https://github.com/user-attachments/assets/9b55a35d-e68c-49f4-b6c0-0108f5bcae68" />
-
-### Signup Page
-<img width="1366" height="642" alt="image" src="https://github.com/user-attachments/assets/5cab3d04-f3a4-4f73-ae66-0940f15afc9b" />
-
-### Dashboard (Media Gallery)
-<img width="1346" height="636" alt="image" src="https://github.com/user-attachments/assets/7ef59121-6d4b-4788-bd5d-91229145734c" />
-<img width="1346" height="615" alt="image" src="https://github.com/user-attachments/assets/966d4789-ff3a-4b55-82ef-c8ed3dfa64d3" />
-
-### Image Viewer Modal
-<img width="1362" height="607" alt="image" src="https://github.com/user-attachments/assets/69ce6464-f1da-41ce-bd89-d23cf84b1097" />
-
-### User Settings
-<img width="1365" height="630" alt="image" src="https://github.com/user-attachments/assets/d2ccf490-dd79-4a9b-8f51-96df48717b97" />
-
-### Demo Video
-https://github.com/user-attachments/assets/e176794a-c09e-4920-b380-3ee5017d243c
-
----
 
 
 ## API Endpoints
